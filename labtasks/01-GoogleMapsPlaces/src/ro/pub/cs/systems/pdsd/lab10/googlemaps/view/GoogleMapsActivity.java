@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import ro.pub.cs.systems.pdsd.lab10.googlemaps.R;
 import ro.pub.cs.systems.pdsd.lab10.googlemaps.controller.PlacesAdapter;
 import ro.pub.cs.systems.pdsd.lab10.googlemaps.general.Constants;
+import ro.pub.cs.systems.pdsd.lab10.googlemaps.general.Utilities;
 import ro.pub.cs.systems.pdsd.lab10.googlemaps.model.Place;
 import android.app.Activity;
 import android.os.Bundle;
@@ -27,8 +28,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class GoogleMapsActivity extends Activity implements ConnectionCallbacks, OnConnectionFailedListener {
 	
@@ -63,7 +67,24 @@ public class GoogleMapsActivity extends Activity implements ConnectionCallbacks,
 			// add the MarkerOptions to the Google Map
 			// add the Place information to the places list
 			// notify the placesAdapter that the data set was changed
-
+			if (latitudeEditText != null && longitudeEditText != null && nameEditText != null) {
+				double latitude = Double.parseDouble(latitudeEditText.getText().toString());
+				double longitude = Double.parseDouble(longitudeEditText.getText().toString());
+				
+				navigateToLocation(latitude, longitude);
+				
+				MarkerOptions marker = new MarkerOptions()
+				  .position(new LatLng(
+				    latitude, 
+				    longitude
+				  ))
+				  .title(nameEditText.getText().toString());
+				marker.icon(BitmapDescriptorFactory.defaultMarker(Utilities.getDefaultMarker(markerTypeSpinner.getSelectedItemPosition())));
+				marker.visible(true);
+				googleMap.addMarker(marker);				
+			} else {
+				Log.d(Constants.TAG, "Latitude, longitude and name are null!");
+			}
 		}
 	}
 	
